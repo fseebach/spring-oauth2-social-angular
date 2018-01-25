@@ -15,7 +15,7 @@ export class AppComponent {
 
   public bla() {
     this.http.get('http://localhost:9999/api/helloworld').subscribe(res => {
-      alert(res);
+      alert(JSON.stringify(res));
     });
   }
 
