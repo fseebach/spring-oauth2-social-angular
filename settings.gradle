@@ -1,0 +1,5 @@
+rootProject.name = 'demo-project'
+
+include 'eureka-server'
+include 'resource-server1'
+include 'auth-server'

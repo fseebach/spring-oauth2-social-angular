@@ -1,0 +1,13 @@
+version: '3'
+services:
+  eureka-server:
+    image: demo/eureka-server:0.0.2-SNAPSHOT
+    ports:
+     - "8761:8761"
+  rs1:
+    image: demo/resource-server1:0.0.1-SNAPSHOT
+  auth:
+    image: demo/auth-server:0.0.1-SNAPSHOT
+    ports:
+     - "8080:8080"
+
