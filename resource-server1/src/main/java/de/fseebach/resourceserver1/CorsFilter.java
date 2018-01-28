@@ -1,40 +1,32 @@
 package de.fseebach.resourceserver1;
 
-import java.io.IOException;
+import java.util.Arrays;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+@Configuration
+class CorsConfig {
 
-@Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
-class Cors implements Filter {
-
-  public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-    HttpServletResponse response = (HttpServletResponse) res;
-    HttpServletRequest request = (HttpServletRequest) req;
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
-    response.setHeader("Access-Control-Allow-Headers", "Authorization");
-    response.setHeader("Access-Control-Max-Age", "3600");
-    if (!request.getMethod().equals("OPTIONS")) {
-    	chain.doFilter(req, res);
-    } else {
-    	
-    }
-  }
-
-  public void init(FilterConfig filterConfig) {}
-
-  public void destroy() {}
+	@Bean
+	public FilterRegistrationBean corsFilterConfig() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		CorsConfiguration config = new CorsConfiguration();
+		config.applyPermitDefaultValues();
+		config.setAllowCredentials(true);
+		config.setAllowedOrigins(Arrays.asList("*"));
+		config.setAllowedHeaders(Arrays.asList("*"));
+		config.setAllowedMethods(Arrays.asList("*"));
+		config.setExposedHeaders(Arrays.asList("content-length"));
+		config.setMaxAge(3600L);
+		source.registerCorsConfiguration("/**", config);
+		FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+		bean.setOrder(0);
+		return bean;
+	}
 
 }
