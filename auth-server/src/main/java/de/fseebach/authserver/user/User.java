@@ -1,22 +1,30 @@
-package de.fseebach.authserver;
+package de.fseebach.authserver.user;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class User {
 
-	private int id;
+	@Id
+	@GeneratedValue
+	private Long id;
     private String fullName;
     private String email;
     private String principalId;
     private String photo;
     private LocalDateTime created;
     private LocalDateTime lastLogin;
+    private String facebookId;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -68,4 +76,12 @@ public class User {
         this.lastLogin = lastLogin;
     }
 
+	public String getFacebookId() {
+		return facebookId;
+	}
+
+	public void setFacebookId(String facebookId) {
+		this.facebookId = facebookId;
+	}
+    
 }

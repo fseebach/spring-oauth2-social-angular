@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.CompositeFilter;
 
+import de.fseebach.authserver.user.User;
+
 @SpringBootApplication
 @RestController
 @EnableOAuth2Client
