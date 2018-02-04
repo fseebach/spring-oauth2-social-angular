@@ -7,15 +7,6 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
-security:
-  oauth2:
-    client:
-      client-id: acme
-      client-secret: acmesecret
-      scope: read,write
-      grant-type: authorization_code
-      auto-approve-scopes: '.*'
-      registered-redirect-uri: http://localhost:4201/
 
 facebook:
   client:
