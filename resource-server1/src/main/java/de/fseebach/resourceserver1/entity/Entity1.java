@@ -1,15 +1,25 @@
 package de.fseebach.resourceserver1.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Entity1 {
 
 	@Id
+	@GeneratedValue
 	private Long id;
 	
 	private String property1;
+
+	public Entity1() {
+	}
+	
+	public Entity1(String property1) {
+		super();
+		this.property1 = property1;
+	}
 
 	public Long getId() {
 		return id;

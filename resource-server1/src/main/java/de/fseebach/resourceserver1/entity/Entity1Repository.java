@@ -1,7 +1,9 @@
 package de.fseebach.resourceserver1.entity;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-public interface Entity1Repository extends CrudRepository<Entity1, Long>  {
-
+@PreAuthorize("hasAuthority('LOCALUSER')")
+public interface Entity1Repository extends PagingAndSortingRepository<Entity1, Long>  {
+	
 }

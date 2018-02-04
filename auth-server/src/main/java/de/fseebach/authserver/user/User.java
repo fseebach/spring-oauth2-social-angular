@@ -1,8 +1,8 @@
 package de.fseebach.authserver.user;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,9 +31,9 @@ public class User implements UserDetails {
     private LocalDateTime lastLogin;
     private String facebookId;
 
-    @Transient
-    private Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
-	@JsonIgnore
+    private String authorities = "";
+	
+    @JsonIgnore
     private String password;
     
     public Long getId() {
@@ -92,12 +93,14 @@ public class User implements UserDetails {
 	}
 	
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
+	public Collection<GrantedAuthority> getAuthorities() {
+		return AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 	}
 	
-	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-		this.authorities = authorities;
+	public void addAuthority(GrantedAuthority authority) {
+		Collection<GrantedAuthority> auth = this.getAuthorities();
+		auth.add(authority);
+		this.authorities = auth.stream().map(a -> a.getAuthority()).collect(Collectors.joining(","));
 	}
 
 	@Override

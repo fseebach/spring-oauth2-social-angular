@@ -1,10 +1,6 @@
 package de.fseebach.resourceserver1;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.springframework.security.core.GrantedAuthority;
 
 
 //Duplicated from AuthServer. Move to "common" module?
@@ -19,8 +15,6 @@ public class User {
     private LocalDateTime lastLogin;
     private String facebookId;
 
-    private Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
-	private String password;
     
     public Long getId() {
         return id;
@@ -78,22 +72,6 @@ public class User {
 		this.facebookId = facebookId;
 	}
 	
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
-	}
-	
-	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-		this.authorities = authorities;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public String getUsername() {
 		return username;
 	}

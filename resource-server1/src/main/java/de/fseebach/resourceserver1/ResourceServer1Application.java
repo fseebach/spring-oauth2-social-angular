@@ -1,37 +1,46 @@
 package de.fseebach.resourceserver1;
 
+import java.util.stream.IntStream;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.FixedAuthoritiesExtractor;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import de.fseebach.resourceserver1.entity.Entity1;
-import de.fseebach.resourceserver1.entity.Entity1Repository;
 
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableResourceServer
-@RestController
-public class ResourceServer1Application {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class ResourceServer1Application implements CommandLineRunner {
 
 	@Autowired
-	private Entity1Repository repository;
-	
-	@GetMapping("api/helloworld")
-	public @ResponseBody Entity1 helloWorld() {
-		Entity1 entity1 = new Entity1();
-		entity1.setId(123L);
-		entity1.setProperty1("Hello World");
-		return entity1;
-	}
-	
-	
+	private EntityManager em;
+
 	public static void main(String[] args) {
 		SpringApplication.run(ResourceServer1Application.class, args);
 	}
-	
+
+	@Bean
+	public AuthoritiesExtractor authoritiesExtractor() {
+		return new FixedAuthoritiesExtractor();
+	}
+
+	@Override
+	@Transactional
+	public void run(String... args) throws Exception {
+		IntStream.range(1, 100).boxed().map(i -> new Entity1("Entity " + i)).forEach(em::persist);
+
+	}
+
 }

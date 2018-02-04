@@ -5,5 +5,9 @@
 <br/><br/>
 Logged in as: {{user.username}} // {{user.email}}
 <br/><br/>
-ResourceServer1 Response: {{rs1response.property1}}
+ResourceServer1 Response: <br/>
+<div *ngFor="let e of rs1response">
+    {{e.property1}}
+</div>
+
 <router-outlet></router-outlet>

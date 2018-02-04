@@ -15,7 +15,8 @@ public class PrincipalExtractor implements org.springframework.boot.autoconfigur
 	
 	@Override
 	public Object extractPrincipal(Map<String, Object> map) {
-		return om.convertValue(map, User.class);
+		User convertValue = om.convertValue(map, User.class);
+		return convertValue;
 	}
 
 }

@@ -20,8 +20,8 @@ export class AppComponent {
       this.user = u;
     });
 
-    this.http.get('http://localhost:9999/api/helloworld').subscribe(res => {
-      this.rs1response = res;
+    this.http.get('http://localhost:9999/entity1s').subscribe(res => {
+      this.rs1response = res._embedded.entity1s;
     });
   }
 
