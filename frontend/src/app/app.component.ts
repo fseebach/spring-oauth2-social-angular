@@ -9,13 +9,19 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   title = 'app';
 
+  public user: any;
+  public rs1response: any;
   constructor (private http: HttpClient) {
 
   }
 
   public bla() {
+    this.http.get('http://localhost:8080/me').subscribe(u => {
+      this.user = u;
+    });
+
     this.http.get('http://localhost:9999/api/helloworld').subscribe(res => {
-      alert(JSON.stringify(res));
+      this.rs1response = res;
     });
   }
 

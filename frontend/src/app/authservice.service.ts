@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
@@ -6,6 +7,9 @@ import { Observable } from 'rxjs/Observable';
 export class AuthserviceService {
 
   private accesToken: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+
+  private user: any;
+
 
   constructor() {
     this.accesToken.subscribe(t => {

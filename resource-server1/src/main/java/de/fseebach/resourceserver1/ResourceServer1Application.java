@@ -25,6 +25,7 @@ public class ResourceServer1Application {
 	public @ResponseBody Entity1 helloWorld() {
 		Entity1 entity1 = new Entity1();
 		entity1.setId(123L);
+		entity1.setProperty1("Hello World");
 		return entity1;
 	}
 	
