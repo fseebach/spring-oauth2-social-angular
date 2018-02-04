@@ -1,26 +1,15 @@
-package de.fseebach.authserver.user;
+package de.fseebach.resourceserver1;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
-public class User implements UserDetails {
+//Duplicated from AuthServer. Move to "common" module?
+public class User {
 
-	private static final long serialVersionUID = -1L;
-
-	@Id
-	@GeneratedValue
 	private Long id;
 	private String username;
     private String fullName;
@@ -30,10 +19,8 @@ public class User implements UserDetails {
     private LocalDateTime lastLogin;
     private String facebookId;
 
-    @Transient
     private Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
-	@JsonIgnore
-    private String password;
+	private String password;
     
     public Long getId() {
         return id;
@@ -91,7 +78,6 @@ public class User implements UserDetails {
 		this.facebookId = facebookId;
 	}
 	
-	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
 	}
@@ -100,7 +86,6 @@ public class User implements UserDetails {
 		this.authorities = authorities;
 	}
 
-	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -109,7 +94,6 @@ public class User implements UserDetails {
 		this.password = password;
 	}
 
-	@Override
 	public String getUsername() {
 		return username;
 	}
@@ -118,28 +102,20 @@ public class User implements UserDetails {
 		this.username = username;
 	}
 
-	@Override
-	@Transient
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
-	@Override
-	@Transient
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
-	@Override
-	@Transient
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
-	@Override
-	@Transient
 	public boolean isEnabled() {
 		return true;
 	}
-    
+	
 }

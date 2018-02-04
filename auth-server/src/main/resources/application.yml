@@ -4,7 +4,9 @@ server:
 spring:
   application:
     name: auth-server
-
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
 security:
   oauth2:
     client:

@@ -68,7 +68,7 @@ public class AuthServerApplication extends WebSecurityConfigurerAdapter implemen
 		
 	}
 
-	@RequestMapping({ "/user", "/me" })
+	@RequestMapping({"/user","/me"})
 	public @ResponseBody User user(OAuth2Authentication principal) {
 		return (User) principal.getPrincipal();
 	}
@@ -157,12 +157,11 @@ public class AuthServerApplication extends WebSecurityConfigurerAdapter implemen
             	User u = new User();
                 u = new User();
                 u.setUsername("facebook-" + principalId);
-                u.setPrincipalId(principalId);
+                u.setFacebookId(principalId);
                 u.setCreated(LocalDateTime.now());
                 u.setEmail((String) map.get("email"));
                 u.setFullName((String) map.get("name"));
                 u.setPhoto((String) map.get("picture"));
-                u.setLastLogin(LocalDateTime.now());
                 return u;
             });
             user.setLastLogin(LocalDateTime.now());
