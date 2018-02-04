@@ -3,12 +3,6 @@ spring:
     name: resource-server1
 server:
   port: 9999
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_URI:http://eureka-server:8761/eureka}
-  instance:
-    preferIpAddress: true
 
 
 security:

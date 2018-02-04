@@ -5,7 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +16,6 @@ import de.fseebach.resourceserver1.entity.Entity1Repository;
 @EnableDiscoveryClient
 @EnableResourceServer
 @RestController
-@CrossOrigin(origins="*")
 public class ResourceServer1Application {
 
 	@Autowired

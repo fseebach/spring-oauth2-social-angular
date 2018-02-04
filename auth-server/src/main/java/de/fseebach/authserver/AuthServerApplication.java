@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -17,8 +18,11 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
@@ -28,7 +32,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,32 +39,63 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.CompositeFilter;
 
 import de.fseebach.authserver.user.User;
+import de.fseebach.authserver.user.UserDetailService;
+import de.fseebach.authserver.user.UserRepository;
 
 @SpringBootApplication
 @RestController
 @EnableOAuth2Client
 @EnableAuthorizationServer
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class AuthServerApplication extends WebSecurityConfigurerAdapter {
+public class AuthServerApplication extends WebSecurityConfigurerAdapter implements CommandLineRunner {
 
 	@Autowired
 	private OAuth2ClientContext oauth2ClientContext;
+	
+	@Autowired
+	private UserDetailService userDetailService;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Override
+	public void run(String... args) throws Exception {
+		//Register user
+		User user = new User();
+		user.setUsername("john");
+		user.setPassword(encoder().encode("doe"));
+		userRepository.save(user);
+		
+	}
 
 	@RequestMapping({ "/user", "/me" })
 	public @ResponseBody User user(OAuth2Authentication principal) {
 		return (User) principal.getPrincipal();
 	}
+	
+	@Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+        	.userDetailsService(userDetailService)
+        	.passwordEncoder(encoder());
+    }
+	
+	@Bean
+	public PasswordEncoder encoder() {
+	    return new BCryptPasswordEncoder(11);
+	}
 
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.antMatcher("/**").authorizeRequests()
-			.antMatchers("/", "/login**").permitAll()
-			.anyRequest().authenticated()
-			.and().exceptionHandling()
-		      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))
-			.and()
-				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+    		.authorizeRequests()
+        		.antMatchers("/", "/login**").permitAll()
+        		.anyRequest().authenticated()
+        	.and()
+        		.formLogin().loginPage("/login").permitAll()
+        	.and()
+        		.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
 	}
 
 	private Filter ssoFilter() {
@@ -113,24 +147,26 @@ public class AuthServerApplication extends WebSecurityConfigurerAdapter {
 		SpringApplication.run(AuthServerApplication.class, args);
 	}
 	
+	
 	@Bean
     public PrincipalExtractor facebookPrincipalExtractor() {
         return map -> {
             String principalId = (String) map.get("id");
-            //User user = userRepository.findByPrincipalId(principalId);
-            //if (user == null) {
-                User user = new User();
-                user = new User();
-                user.setPrincipalId(principalId);
-                user.setCreated(LocalDateTime.now());
-                user.setEmail((String) map.get("email"));
-                user.setFullName((String) map.get("name"));
-                user.setPhoto((String) map.get("picture"));
-                user.setLastLogin(LocalDateTime.now());
-//            } else {
-//                user.setLastLogin(LocalDateTime.now());
-//            }
-//            userRepository.save(user);
+            
+            User user = userRepository.findByFacebookId(principalId).orElseGet(() -> {
+            	User u = new User();
+                u = new User();
+                u.setUsername("facebook-" + principalId);
+                u.setPrincipalId(principalId);
+                u.setCreated(LocalDateTime.now());
+                u.setEmail((String) map.get("email"));
+                u.setFullName((String) map.get("name"));
+                u.setPhoto((String) map.get("picture"));
+                u.setLastLogin(LocalDateTime.now());
+                return u;
+            });
+            user.setLastLogin(LocalDateTime.now());
+            userRepository.save(user);
             return user;
         };
     }

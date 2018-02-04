@@ -1,17 +1,26 @@
 package de.fseebach.authserver.user;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-public class User {
+public class User implements UserDetails {
+
+	private static final long serialVersionUID = -1L;
 
 	@Id
 	@GeneratedValue
 	private Long id;
+	private String username;
     private String fullName;
     private String email;
     private String principalId;
@@ -20,6 +29,10 @@ public class User {
     private LocalDateTime lastLogin;
     private String facebookId;
 
+    @Transient
+    private Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
+	private String password;
+    
     public Long getId() {
         return id;
     }
@@ -28,7 +41,7 @@ public class User {
         this.id = id;
     }
 
-    public String getFullName() {
+	public String getFullName() {
         return fullName;
     }
 
@@ -82,6 +95,57 @@ public class User {
 
 	public void setFacebookId(String facebookId) {
 		this.facebookId = facebookId;
+	}
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return authorities;
+	}
+	
+	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+		this.authorities = authorities;
+	}
+
+	@Override
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	@Override
+	@Transient
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	@Transient
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	@Transient
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	@Transient
+	public boolean isEnabled() {
+		return true;
 	}
     
 }
