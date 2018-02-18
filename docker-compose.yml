@@ -5,7 +5,7 @@ services:
     ports:
      - "5432:5432"
   eureka:
-    image: demo/eureka-server:0.0.2-SNAPSHOT
+    image: demo/eureka-server:0.0.1-SNAPSHOT
     ports:
      - "8761:8761"
   rs1:
