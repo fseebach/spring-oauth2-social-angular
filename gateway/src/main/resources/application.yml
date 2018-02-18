@@ -1,0 +1,33 @@
+server:
+  port: 8888
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    preferIpAddress: true
+
+spring:
+  application:
+    name: gateway-server
+  zipkin:
+    base-url: http://zipkin
+  sleuth:
+    sampler:
+      percentage: 1.0
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+zuul:
+  prefix: /api
+  routes:
+    rs1:
+      path: /rs1/**
+      sensitiveHeaders:
+      serviceId: resource-server1
+      strip-prefix: true
+      
+security: 
+  basic: 
+    enabled: false

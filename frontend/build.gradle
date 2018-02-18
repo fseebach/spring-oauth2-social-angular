@@ -1,0 +1,58 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+	      url "https://plugins.gradle.org/m2/"
+	    }
+	}
+	dependencies {
+		classpath 'se.transmode.gradle:gradle-docker:1.2'
+		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+	}
+}
+
+apply plugin: 'docker'
+apply plugin:"com.moowork.node"
+
+group = 'de.fseebach'
+version = '0.0.2-SNAPSHOT'
+
+
+repositories {
+	mavenCentral()
+}
+
+node 
+{
+  version = "7.5.0"
+  download = true
+}
+
+dependencies {
+}
+
+task buildFrontend(type: NpmTask, dependsOn: 'npmInstall') {
+  group = 'build'
+  description = 'Compile client side folder for development'
+  args = ['run','build']
+}
+
+task buildDocker(type: Docker) {
+  baseImage = 'nginx:1.13.3-alpine'
+  push = project.hasProperty('push')
+  tag = 'demo/frontend'
+  
+  addFile {
+    from 'nginx'
+    into '/etc/nginx/conf.d/'
+  }
+  addFile {
+    from 'dist' 
+    into '/usr/share/nginx/html'
+  }
+  
+  entryPoint(['nginx', '-g', 'daemon off;'])
+}
+
+buildDocker.dependsOn('buildFrontend')
+

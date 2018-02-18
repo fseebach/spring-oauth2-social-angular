@@ -1,5 +1,11 @@
 server:
   port: 8080
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    preferIpAddress: true
 
 spring:
   application:
@@ -7,6 +13,11 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  zipkin:
+    base-url: http://zipkin
+  sleuth:
+    sampler:
+      percentage: 1.0
 
 facebook:
   client:

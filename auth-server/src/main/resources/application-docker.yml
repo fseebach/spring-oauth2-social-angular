@@ -1,0 +1,13 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI}
+      
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/auth
+    username: auth
+    password: auth  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

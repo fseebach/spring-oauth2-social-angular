@@ -1,13 +1,40 @@
 version: '3'
 services:
-  eureka-server:
+  db:
+    image: demo/database:0.0.1-SNAPSHOT
+    ports:
+     - "5432:5432"
+  eureka:
     image: demo/eureka-server:0.0.2-SNAPSHOT
     ports:
      - "8761:8761"
   rs1:
     image: demo/resource-server1:0.0.1-SNAPSHOT
-  auth:
+    environment:
+     - EUREKA_URI=http://eureka:8761/eureka
+     - AUTH_SERVER_URI=http://auth-server:8080/
+  frontend:
+    image: demo/frontend:0.0.2-SNAPSHOT
+    ports:
+     - "4201:80"
+    environment:
+     - EUREKA_URI=http://eureka:8761/eureka
+  auth-server:
     image: demo/auth-server:0.0.1-SNAPSHOT
     ports:
      - "8080:8080"
-
+    environment:
+     - EUREKA_URI=http://eureka:8761/eureka
+  gateway-server:
+    image: demo/gateway-server:0.0.1-SNAPSHOT
+    ports:
+     - "8888:8888"
+    environment:
+     - EUREKA_URI=http://eureka:8761/eureka
+     - AUTH_SERVER_URI=http://auth-server:8080/
+  zipkin-server:
+    image: demo/zipkin-server:0.0.1-SNAPSHOT
+    ports:
+     - "7777:7777"
+    environment:
+     - EUREKA_URI=http://eureka:8761/eureka

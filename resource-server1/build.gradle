@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.9.RELEASE'
+		springBootVersion = '1.5.10.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -32,13 +32,15 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-devtools")
 	compile('org.springframework.cloud:spring-cloud-starter-eureka:1.1.5.RELEASE')
 	compile('org.springframework.cloud:spring-cloud-starter-oauth2')
+	compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+	compile('org.springframework.cloud:spring-cloud-starter-zipkin')
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compile("org.springframework.boot:spring-boot-starter-data-rest")
 	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	compile("com.h2database:h2")
-
+	compile("org.postgresql:postgresql:9.4-1206-jdbc42")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
 }
@@ -58,7 +60,7 @@ task buildDocker(type: Docker) {
     rename {'app.jar'}
   }
   exposePort(8080)
-  entryPoint(['java', '-Djava.security.egd=file:/dev/./urandom', '-jar', '/app.jar'])
+  entryPoint(['java', '-Djava.security.egd=file:/dev/./urandom', '-Dspring.profiles.active=docker', '-jar', '/app.jar'])
 }
 
 buildDocker.dependsOn(build)

@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.FixedAuthoritiesExtractor;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
@@ -31,16 +28,11 @@ public class ResourceServer1Application implements CommandLineRunner {
 		SpringApplication.run(ResourceServer1Application.class, args);
 	}
 
-	@Bean
-	public AuthoritiesExtractor authoritiesExtractor() {
-		return new FixedAuthoritiesExtractor();
-	}
-
 	@Override
 	@Transactional
 	public void run(String... args) throws Exception {
 		IntStream.range(1, 100).boxed().map(i -> new Entity1("Entity " + i)).forEach(em::persist);
 
 	}
-
+	
 }

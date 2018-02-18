@@ -1,0 +1,13 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI}
+      
+security:
+  oauth2:
+    client:
+      access-token-uri: ${AUTH_SERVER_URI}/oauth/token
+      user-authorization-uri: ${AUTH_SERVER_URI}/oauth/authorize
+    resource:
+      token-info-uri: ${AUTH_SERVER_URI}/oauth/check_token
+      

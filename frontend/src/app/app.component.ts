@@ -20,9 +20,10 @@ export class AppComponent {
       this.user = u;
     });
 
-    this.http.get('http://localhost:9999/entity1s').subscribe(res => {
-      this.rs1response = res._embedded.entity1s;
+    this.http.get('http://localhost:8888/api/rs1/entity1s').subscribe(res => {
+      this.rs1response = JSON.parse(JSON.stringify(res))._embedded.entity1s;
     });
   }
 
 }
+

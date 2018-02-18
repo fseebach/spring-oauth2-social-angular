@@ -1,0 +1,25 @@
+server:
+  port: 0
+
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/rs1
+    username: rs1
+    password: rs1
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI}
+  
+security:
+  oauth2:
+    client:
+      access-token-uri: ${AUTH_SERVER_URI}/oauth/token
+      user-authorization-uri: ${AUTH_SERVER_URI}/oauth/authorize
+    resource:
+      user-info-uri: ${AUTH_SERVER_URI}/me
+      
