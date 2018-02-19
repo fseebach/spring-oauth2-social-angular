@@ -16,7 +16,7 @@ export class AppComponent {
   }
 
   public bla() {
-    this.http.get('http://localhost:8080/me').subscribe(u => {
+    this.http.get('http://localhost:8888/api/auth/me').subscribe(u => {
       this.user = u;
     });
 

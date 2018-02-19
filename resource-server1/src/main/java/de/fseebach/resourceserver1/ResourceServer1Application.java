@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 
 import de.fseebach.resourceserver1.entity.Entity1;
 
@@ -19,7 +20,7 @@ import de.fseebach.resourceserver1.entity.Entity1;
 @EnableDiscoveryClient
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class ResourceServer1Application implements CommandLineRunner {
+public class ResourceServer1Application extends ResourceServerConfigurerAdapter implements CommandLineRunner {
 
 	@Autowired
 	private EntityManager em;
@@ -34,5 +35,5 @@ public class ResourceServer1Application implements CommandLineRunner {
 		IntStream.range(1, 100).boxed().map(i -> new Entity1("Entity " + i)).forEach(em::persist);
 
 	}
-	
+		
 }
