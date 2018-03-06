@@ -20,7 +20,7 @@ export class AppComponent {
     //  this.user = u;
     //});
 
-    this.http.get('http://gateway.fseebach.de/api/rs1/entity1s').subscribe(res => {
+    this.http.get('https://gateway.fseebach.de/api/rs1/entity1s').subscribe(res => {
       this.rs1response = JSON.parse(JSON.stringify(res))._embedded.entity1s;
     });
   }
