@@ -1,11 +1,11 @@
 version: '3'
 services:
   db:
-    image: demo/database:0.0.1-SNAPSHOT
+    image: fseebach/database:0.0.1-SNAPSHOT
     ports:
      - "5432:5432"
   eureka:
-    image: demo/eureka-server:0.0.1-SNAPSHOT
+    image: fseebach/eureka-server:0.0.1-SNAPSHOT
     ports:
      - "8761:8761"
   rs1:
@@ -14,13 +14,13 @@ services:
      - EUREKA_URI=http://eureka:8761/eureka
      - AUTH_SERVER_URI=http://auth-server:8080/
   frontend:
-    image: demo/frontend:0.0.2-SNAPSHOT
+    image: fseebach/frontend:0.0.2-SNAPSHOT
     ports:
      - "80:80"
     environment:
      - EUREKA_URI=http://eureka:8761/eureka
   auth-server:
-    image: demo/auth-server:0.0.1-SNAPSHOT
+    image: fseebach/auth-server:0.0.1-SNAPSHOT
     ports:
      - "8080:8080"
     environment:
@@ -31,7 +31,7 @@ services:
 #      timeout: 10s
 #      retries: 3
   gateway-server:
-    image: demo/gateway-server:0.0.1-SNAPSHOT
+    image: fseebach/gateway-server:0.0.1-SNAPSHOT
     ports:
      - "8888:8888"
     environment:

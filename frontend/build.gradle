@@ -40,7 +40,7 @@ task buildFrontend(type: NpmTask, dependsOn: 'npmInstall') {
 task buildDocker(type: Docker) {
   baseImage = 'nginx:1.13.3-alpine'
   push = project.hasProperty('push')
-  tag = 'demo/frontend'
+  tag = 'fseebach/frontend'
   
   addFile {
     from 'nginx'

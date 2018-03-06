@@ -19,7 +19,7 @@ repositories {
 task buildDocker(type: Docker) {
   baseImage = 'postgres'
   push = project.hasProperty('push')
-  tag = 'demo/database'
+  tag = 'fseebach/database'
   exposePort(5432)
   
   addFile {
