@@ -60,7 +60,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter{
 					.secret("{noop}acmesecret")
 					.scopes("read", "write")
 					.authorizedGrantTypes("authorization_code", "client_credentials", "password", "implicit")
-					.redirectUris("http://localhost/", "http://fseebach.de");
+					.redirectUris("http://localhost/", "https://fseebach.de");
 	}
 	
 }
