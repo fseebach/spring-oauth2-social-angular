@@ -16,7 +16,7 @@ services:
   frontend:
     image: demo/frontend:0.0.2-SNAPSHOT
     ports:
-     - "4201:80"
+     - "80:80"
     environment:
      - EUREKA_URI=http://eureka:8761/eureka
   auth-server:
@@ -25,6 +25,11 @@ services:
      - "8080:8080"
     environment:
      - EUREKA_URI=http://eureka:8761/eureka
+#    healthcheck:
+#      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/login"]
+#      interval: 1m30s
+#      timeout: 10s
+#      retries: 3
   gateway-server:
     image: demo/gateway-server:0.0.1-SNAPSHOT
     ports:
@@ -32,9 +37,9 @@ services:
     environment:
      - EUREKA_URI=http://eureka:8761/eureka
      - AUTH_SERVER_URI=http://auth-server:8080/
-  zipkin-server:
-    image: demo/zipkin-server:0.0.1-SNAPSHOT
-    ports:
-     - "7777:7777"
-    environment:
-     - EUREKA_URI=http://eureka:8761/eureka
+#  zipkin-server:
+#    image: demo/zipkin-server:0.0.1-SNAPSHOT
+#    ports:
+#     - "7777:7777"
+#    environment:
+#     - EUREKA_URI=http://eureka:8761/eureka

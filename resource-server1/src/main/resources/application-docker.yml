@@ -17,9 +17,7 @@ eureka:
   
 security:
   oauth2:
-    client:
-      access-token-uri: ${AUTH_SERVER_URI}/oauth/token
-      user-authorization-uri: ${AUTH_SERVER_URI}/oauth/authorize
     resource:
-      user-info-uri: ${AUTH_SERVER_URI}/me
+      jwt:
+        key-uri: ${AUTH_SERVER_URI}/oauth/token_key
       

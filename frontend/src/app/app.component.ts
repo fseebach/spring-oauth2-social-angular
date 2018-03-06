@@ -16,9 +16,9 @@ export class AppComponent {
   }
 
   public bla() {
-    this.http.get('http://localhost:8888/api/auth/me').subscribe(u => {
-      this.user = u;
-    });
+    //this.http.get('http://localhost:9999/api/auth/me').subscribe(u => {
+    //  this.user = u;
+    //});
 
     this.http.get('http://localhost:8888/api/rs1/entity1s').subscribe(res => {
       this.rs1response = JSON.parse(JSON.stringify(res))._embedded.entity1s;

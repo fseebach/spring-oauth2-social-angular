@@ -18,15 +18,14 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 @EnableAuthorizationServer
-public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
-
+public class AuthServerConfig extends AuthorizationServerConfigurerAdapter{
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
 		oauthServer
 			.tokenKeyAccess("isAuthenticated()")
 			.checkTokenAccess("isAuthenticated()");
 	}
-
+	
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
@@ -52,16 +51,16 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 			.tokenEnhancer(enhancerChain)
 			.authenticationManager(authenticationManager);
 	}
-
+	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients
 			.inMemory()
 				.withClient("acme")
-					.secret("acmesecret")
+					.secret("{noop}acmesecret")
 					.scopes("read", "write")
 					.authorizedGrantTypes("authorization_code", "client_credentials", "password", "implicit")
-					.redirectUris("http://localhost:4201/");
+					.redirectUris("http://localhost/");
 	}
-
+	
 }

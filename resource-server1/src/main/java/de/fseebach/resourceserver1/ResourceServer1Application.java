@@ -35,5 +35,5 @@ public class ResourceServer1Application extends ResourceServerConfigurerAdapter 
 		IntStream.range(1, 100).boxed().map(i -> new Entity1("Entity " + i)).forEach(em::persist);
 
 	}
-		
+			
 }
