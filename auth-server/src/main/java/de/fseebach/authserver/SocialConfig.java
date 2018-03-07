@@ -47,9 +47,11 @@ public class SocialConfig implements SocialConfigurer {
 	@Override
 	public void addConnectionFactories(ConnectionFactoryConfigurer connectionFactoryConfigurer,
 			Environment environment) {
-		connectionFactoryConfigurer.addConnectionFactory(new FacebookConnectionFactory(
-				environment.getProperty("facebook.clientId"),
-				environment.getProperty("facebook.clientSecret")));
+		FacebookConnectionFactory connectionFactory = new FacebookConnectionFactory(
+						environment.getProperty("facebook.clientId"),
+						environment.getProperty("facebook.clientSecret"));
+		connectionFactory.setScope("email");
+		connectionFactoryConfigurer.addConnectionFactory(connectionFactory);
 	}
 
 	@Override
