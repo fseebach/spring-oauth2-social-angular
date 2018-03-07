@@ -64,7 +64,7 @@ public class SocialConfig implements SocialConfigurer {
 		inMemoryUsersConnectionRepository.setConnectionSignUp(id -> {
 			//hier muss man sehen obs zur facebook email schon einen lokalen 
 			//user gibt... dann kann man die ohne signup redirect verbandeln.
-			return "";
+			return null;
 		});
 		
 		return inMemoryUsersConnectionRepository;
