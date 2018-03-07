@@ -60,7 +60,7 @@ public class SignupController {
 		}
 		User account = createAccount(form, formBinding);
 		if (account != null) {
-			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(account.getUsername(), null, null));
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(account.getUsername(), null, account.getAuthorities()));
 			providerSignInUtils.doPostSignUp(account.getUsername(), request);
 			
 			return this.getRedirectUrl(request);
