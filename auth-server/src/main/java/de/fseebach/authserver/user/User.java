@@ -26,7 +26,8 @@ public class User implements UserDetails {
 	@GeneratedValue
 	private Long id;
 	private String username;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String email;
     private String photo;
     private LocalDateTime created;
@@ -46,15 +47,23 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-	public String getFullName() {
-        return fullName;
-    }
+    public String getFirstName() {
+		return firstName;
+	}
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public String getEmail() {
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
         return email;
     }
 

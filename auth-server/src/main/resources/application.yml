@@ -18,13 +18,18 @@ spring:
   sleuth:
     sampler:
       percentage: 1.0
-  security:
-    oauth2:
-      client:
-        registration:
-          facebook:
-            clientId: 467525726975630
-            clientSecret: a7b56ef0799b916d6530cb13d5fe8b1c
+  #security:
+  #  oauth2:
+  #    client:
+  #      registration:
+  #        facebook:
+  #          clientId: 467525726975630
+  #          clientSecret: a7b56ef0799b916d6530cb13d5fe8b1c
+
+facebook:
+  clientId: 467525726975630
+  clientSecret: a7b56ef0799b916d6530cb13d5fe8b1c
+
 security:
   oauth2: 
     client:

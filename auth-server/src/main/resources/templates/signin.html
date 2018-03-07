@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Getting Started: Serving Web Content</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<form id="signin" th:action="@{/signin/authenticate}" method="post">
+		<input type="hidden" name="_csrf" th:value="${_csrf.token}"></input>
+		<div class="formInfo">
+			<div class="error" th:if="${param.error != null and param.error[0] eq 'bad_credentials'}">
+				Your sign in information was incorrect. Please try again or <a
+					th:href="@{/signup}">sign up</a>.
+			</div>
+			<div class="error" th:if="${param.error eq 'multiple_users'}">
+				Multiple local accounts are connected to the provider account. Try
+				again with a different provider or with your username and password.
+			</div>
+		</div>
+		<fieldset class="loginForm">
+			<label for="login">Username</label> <input id="login" name="username"
+				type="text" size="25"></input><br /> <label for="password">Password</label>
+			<input id="password" name="password" type="password" size="25"></input>
+			<br />
+			<br />
+			<button type="submit" class="btn btn-form">Sign In</button>
+		</fieldset>
+		<br />
+
+		<p>
+			Or you can <a th:href="@{/signup}">signup</a> with a new account.
+		</p>
+	</form>
+
+	<p>
+		<a th:href="@{/auth/facebook}">Signin With Facebook</a>
+	</p>
+</body>
+</html>
+

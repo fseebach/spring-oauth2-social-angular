@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.social.security.SpringSocialConfigurer;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.fseebach.authserver.user.User;
@@ -25,10 +26,24 @@ public class AuthServerApplication
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
 		http
-			.oauth2Login()
-			.and()
-			.formLogin();			
+	        .formLogin()
+	            .loginPage("/signin")
+	            .loginProcessingUrl("/signin/authenticate")
+	            .failureUrl("/signin?error=bad_credentials")
+	        .and()
+	            .logout()
+	                .logoutUrl("/signout")
+	                .deleteCookies("JSESSIONID")
+	        .and()
+	            .authorizeRequests()
+	                .antMatchers("/favicon.ico", "/signin","/signup", "/connect/facebook").permitAll()
+	                .antMatchers("/**").authenticated()
+	        .and()
+	            .rememberMe()
+	        .and()
+	            .apply(new SpringSocialConfigurer());
 	}
 
 
