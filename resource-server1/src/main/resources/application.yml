@@ -25,5 +25,5 @@ security:
       client-secret: acmesecret
     resource:
       jwt:
-        key-uri: http://localhost:8080/oauth/token_key
+        key-uri: http://localhost:8081/oauth/token_key
 

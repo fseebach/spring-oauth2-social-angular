@@ -1,0 +1,11 @@
+<p *ngIf="token | async as token ; else loading">
+  you are logged in as {{token.decodedAccessToken.user_name}} / {{token.decodedAccessToken.authorities}} / {{token.decodedAccessToken.scope}}
+</p>
+
+<p *ngIf="expireTimeSeconds | async as expire">
+  your token expires in {{expire}} Seconds
+</p>
+
+<ng-template #loading>
+  <a routerLink="/connect">Login</a>
+</ng-template>

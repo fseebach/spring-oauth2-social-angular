@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { Token } from './oauth2connect/oauth2connect.component';
 import { TokenService } from './oauth2connect/token.service';
 import { Injectable } from '@angular/core';
@@ -10,25 +11,18 @@ import {
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-export class AuthInterceptor implements HttpInterceptor {
+export class ApiInterceptor implements HttpInterceptor {
 
-    private token: Token = null;
-
-    constructor(private tokenService: TokenService) {
-      tokenService.token.subscribe(token => {
-            this.token = token;
-        });
+    constructor() {
     }
 
-
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-      if (this.token === null) {
-        return next.handle(req);
+      let targetUrl = req.url;
+      if (req.url.startsWith('/api')) {
+        targetUrl = environment.apiUrl + req.url;
       }
       req = req.clone({
-          setHeaders: {
-            Authorization: `Bearer ${this.token.access_token}`
-          }
+          url: targetUrl
         });
         return next.handle(req);
       }

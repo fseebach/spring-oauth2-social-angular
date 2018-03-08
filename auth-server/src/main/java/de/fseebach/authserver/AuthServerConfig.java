@@ -1,5 +1,7 @@
 package de.fseebach.authserver;
 
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,15 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter{
 	
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
+		KeyPairGenerator keyGen = null;
+		try {
+			keyGen = KeyPairGenerator.getInstance("RSA");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-		converter.setSigningKey("blablubb");
+		converter.setKeyPair(keyGen.generateKeyPair());
 		return converter;
 	}
 
@@ -60,7 +69,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter{
 					.secret("{noop}acmesecret")
 					.scopes("read", "write")
 					.authorizedGrantTypes("authorization_code", "client_credentials", "password", "implicit")
-					.redirectUris("http://localhost/", "https://fseebach.de");
+					.redirectUris("http://localhost/", "https://fseebach.de")
+					.accessTokenValiditySeconds(60);
 	}
 	
 }
