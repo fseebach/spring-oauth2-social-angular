@@ -37,7 +37,7 @@ export class Oauth2connectComponent implements OnInit {
     queryParams.set('client_id', 'acme');
     queryParams.set('redirect_uri', redirectUrl);
     queryParams.set('scope', 'read write');
-    queryParams.set('state', 'blablubb'); // use random value here...
+    //queryParams.set('state', 'blablubb'); // use random value here...
     window.location.href = authServerUrl + '?' + queryParams.toString();
   }
 
@@ -51,7 +51,7 @@ export class Oauth2connectComponent implements OnInit {
     token.access_token = pairs.find(p => p[0] === 'access_token')[1];
     token.token_type = pairs.find(p => p[0] === 'token_type')[1];
     token.expires_in = pairs.find(p => p[0] === 'expires_in')[1];
-    token.state = pairs.find(p => p[0] === 'state')[1];
+    //token.state = pairs.find(p => p[0] === 'state')[1];
     token.jti = pairs.find(p => p[0] === 'jti')  [1];
     return token;
 
