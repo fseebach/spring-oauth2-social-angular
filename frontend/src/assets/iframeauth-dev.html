@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>title</title>
+
+    <script>
+      if (location.href.indexOf('error') > 0){
+        window.parent.postMessage({ error: 'token refresh error' },'http://localhost')
+      }
+      window.parent.postMessage({ token: location.hash.substr(1) },'http://localhost')
+    </script>
+
+  </head>
+  <body>
+		
+  </body>
+</html>

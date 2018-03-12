@@ -68,6 +68,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter{
 				.withClient("acme")
 					.secret("{noop}acmesecret")
 					.scopes("read", "write")
+					.autoApprove(true)
 					.authorizedGrantTypes("authorization_code", "client_credentials", "password", "implicit")
 					.redirectUris("http://localhost/", "https://fseebach.de")
 					.accessTokenValiditySeconds(60);
