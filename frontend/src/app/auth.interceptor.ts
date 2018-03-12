@@ -1,5 +1,4 @@
-import { Token } from './oauth2connect/oauth2connect.component';
-import { TokenService } from './oauth2connect/token.service';
+import { TokenService, Token } from './oauth2connect/token.service';
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,

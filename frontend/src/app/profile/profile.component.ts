@@ -1,6 +1,5 @@
-import { Token } from './../oauth2connect/oauth2connect.component';
 import { Observable } from 'rxjs/Observable';
-import { TokenService } from './../oauth2connect/token.service';
+import { TokenService, Token } from './../oauth2connect/token.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
