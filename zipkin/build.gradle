@@ -36,7 +36,7 @@ dependencies {
 
 task buildDocker(type: Docker) {
     baseImage = 'openjdk:8-jdk-alpine'
-    push = project.hasProperty('push')
+    push = true //project.hasProperty('push')
     tag = "demo/$project.name"
     addFile {
     from jar
