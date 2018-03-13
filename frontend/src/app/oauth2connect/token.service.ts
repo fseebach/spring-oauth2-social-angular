@@ -3,33 +3,41 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import "rxjs/add/operator/timeout"
+import "rxjs/add/operator/catch"
+import 'rxjs/add/observable/of'
+import 'rxjs/add/operator/do'
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/takeUntil';
+import { interval } from 'rxjs/observable/interval';
 import { environment } from '../../environments/environment';
 
 import * as jwtDecode from 'jwt-decode';
+import { Subscription } from 'rxjs/Subscription';
+import { Subscriber } from 'rxjs/Subscriber';
 
 @Injectable()
 export class TokenService {
 
   private token$: BehaviorSubject<Token> = new BehaviorSubject<Token>(null);
-  private expireSeconds$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
 
-  private iframe;
+  private iframe: HTMLIFrameElement;
 
   constructor() {
-    this.token.subscribe(t => {
-      if (t !== null) {
-        this.setupExpireTime(t);
-        console.log(t.decodedAccessToken);
-      }
-    });
-
+    
     this.iframe = document.createElement('iframe');
     this.iframe.style.width = '0px';
     this.iframe.style.height = '0px';
     this.iframe.style.border = '0'
     document.body.appendChild(this.iframe);
 
-    this.refreshIframe().subscribe(t => this.nextToken(t), e => this.nextToken(null));
+    this.token
+      .filter(t => t !== null)
+      .switchMap(t => Observable.of(t).delay(t.expInMS - 40000))
+      .switchMap(t => this.refreshIframe())
+      .subscribe(t => this.nextToken(t));
 
   }
 
@@ -37,33 +45,24 @@ export class TokenService {
     this.token$.next(this.extractToken(token));
   }
 
-  private setupExpireTime(token: Token) {
-    setTimeout(() => {
-      const diff = this.diffInSecondsForExp(token.decodedAccessToken.exp);
-      if (diff < 30 || token === null) {
-        this.refreshIframe().subscribe(t => this.nextToken(t), e => this.nextToken(null));
-        return;
-      }
-      this.expireSeconds$.next(diff);
-      this.setupExpireTime(this.token$.getValue());
-    }, 1000);
-  }
-
   private refreshIframe() {
+
+    let evListener = (obs: Subscriber<string>) => (ev: MessageEvent)  => {
+      if (!ev.data.token) {
+        return;
+      } else {
+        obs.next(ev.data.token);
+      }
+      obs.complete();
+    }
+
+    let listener;
 
     let observable = new Observable<String>(obs => {
       
-      let evListener = ev => {
-        if (!ev.data.token) {
-          return;
-        } else {
-          obs.next(ev.data.token);
-        }
-        window.removeEventListener('message', evListener)
-        obs.complete();
-      }
+      listener = evListener(obs);
 
-      window.addEventListener('message', evListener)
+      window.addEventListener('message', listener)
       
       const authServerUrl = environment.authUrl + '/oauth/authorize';
       const redirectUrl = window.location.origin + `/assets/iframeauth-${environment.iframeAuth}.html`;
@@ -81,6 +80,11 @@ export class TokenService {
 
     return observable
       .timeout(4000)
+      .do(t => window.removeEventListener('message', listener))
+      .catch(function(err){ 
+        window.removeEventListener('message', listener)
+        return Observable.of(<string>null);
+      })
   }
 
   private extractToken(fragment) {
@@ -99,16 +103,10 @@ export class TokenService {
 
   }
 
-  private diffInSecondsForExp(exp: number): number {
-    return (new Date(exp * 1000).getTime() - new Date().getTime()) / 1000;
-  }
+  
 
   get token(): Observable<Token> {
     return this.token$.asObservable();
-  }
-
-  get expireSeconds(): Observable<number> {
-    return this.expireSeconds$.asObservable();
   }
 
 }
@@ -127,6 +125,10 @@ export class Token {
   expires_in: number;
   jti: string;
   state: string;
+
+  get expInMS(): number {
+    return (new Date(this.decodedAccessToken.exp * 1000).getTime() - new Date().getTime());
+  }
 
   get decodedAccessToken(): AccessToken {
     return <AccessToken>jwtDecode(this.access_token);
