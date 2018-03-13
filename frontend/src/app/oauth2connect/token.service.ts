@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { timeout } from 'q';
+import "rxjs/add/operator/timeout"
 import { environment } from '../../environments/environment';
 
 import * as jwtDecode from 'jwt-decode';
@@ -12,7 +12,8 @@ export class TokenService {
 
   private token$: BehaviorSubject<Token> = new BehaviorSubject<Token>(null);
   private expireSeconds$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
-  private iframe = null;
+
+  private iframe;
 
   constructor() {
     this.token.subscribe(t => {
@@ -22,17 +23,13 @@ export class TokenService {
       }
     });
 
-    window.addEventListener('message', ev => {
-      if (!ev.data.token) {
-        return;
-      }
-      if (ev.data.error) {
-        this.nextToken(null);
-        return;
-      }
-      this.nextToken(ev.data.token);
-      document.body.removeChild(this.iframe);
-    } , false);
+    this.iframe = document.createElement('iframe');
+    this.iframe.style.width = '0px';
+    this.iframe.style.height = '0px';
+    this.iframe.style.border = '0'
+    document.body.appendChild(this.iframe);
+
+    this.refreshIframe().subscribe(t => this.nextToken(t), e => this.nextToken(null));
 
   }
 
@@ -43,8 +40,8 @@ export class TokenService {
   private setupExpireTime(token: Token) {
     setTimeout(() => {
       const diff = this.diffInSecondsForExp(token.decodedAccessToken.exp);
-      if (diff < 10 || token === null) {
-        this.refreshIframe();
+      if (diff < 55 || token === null) {
+        this.refreshIframe().subscribe(t => this.nextToken(t), e => this.nextToken(null));
         return;
       }
       this.expireSeconds$.next(diff);
@@ -53,21 +50,37 @@ export class TokenService {
   }
 
   private refreshIframe() {
-    const authServerUrl = environment.authUrl + '/oauth/authorize';
-    const redirectUrl = window.location.origin + `/assets/iframeauth.html`;
-    const queryParams = new URLSearchParams();
-    queryParams.set('response_type', 'token');
-    queryParams.set('client_id', 'acme');
-    queryParams.set('redirect_uri', redirectUrl);
-    queryParams.set('scope', 'read write');
-    // queryParams.set('state', 'blablubb'); // use random value here...
-    const url = authServerUrl + '?' + queryParams.toString();
 
-    this.iframe = document.createElement('iframe');
-    this.iframe.setAttribute('src', url);
-    this.iframe.style.width = '0px';
-    this.iframe.style.height = '0px';
-    document.body.appendChild(this.iframe);
+    let observable = new Observable<String>(obs => {
+      
+      let evListener = ev => {
+        if (!ev.data.token) {
+          return;
+        } else {
+          obs.next(ev.data.token);
+        }
+        window.removeEventListener('message', evListener)
+        obs.complete();
+      }
+
+      window.addEventListener('message', evListener)
+      
+      const authServerUrl = environment.authUrl + '/oauth/authorize';
+      const redirectUrl = window.location.origin + `/assets/iframeauth-${environment.iframeAuth}.html`;
+      const queryParams = new URLSearchParams();
+      queryParams.set('response_type', 'token');
+      queryParams.set('client_id', 'acme');
+      queryParams.set('redirect_uri', redirectUrl);
+      queryParams.set('scope', 'read write');
+      // queryParams.set('state', 'blablubb'); // use random value here...
+      const url = authServerUrl + '?' + queryParams.toString();
+
+      this.iframe.setAttribute('src', url);
+      
+    })
+
+    return observable
+      .timeout(4000)
   }
 
   private extractToken(fragment) {

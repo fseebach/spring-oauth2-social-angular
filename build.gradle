@@ -60,7 +60,7 @@ configure([project(':auth-server'), project(':eureka-server'), project(':gateway
 	
 	task buildDocker(type: Docker) {
 	  baseImage = 'openjdk:8-jdk-alpine'
-	  push = true //project.hasProperty('push')
+	  push = project.hasProperty('push')
 	  tag = "fseebach/$project.name"
 	  addFile {
 	    from jar

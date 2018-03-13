@@ -70,7 +70,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter{
 					.scopes("read", "write")
 					.autoApprove(true)
 					.authorizedGrantTypes("authorization_code", "client_credentials", "password", "implicit")
-					.redirectUris("http://localhost/", "https://fseebach.de")
+					.redirectUris("http://localhost:4200/", "https://fseebach.de")
 					.accessTokenValiditySeconds(60);
 	}
 	
