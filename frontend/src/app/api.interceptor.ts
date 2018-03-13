@@ -1,5 +1,4 @@
 import { environment } from './../environments/environment';
-import { Token } from './oauth2connect/oauth2connect.component';
 import { TokenService } from './oauth2connect/token.service';
 import { Injectable } from '@angular/core';
 import {

@@ -9,10 +9,11 @@ services:
     ports:
      - "8761:8761"
   rs1:
-    image: demo/resource-server1:0.0.1-SNAPSHOT
+    image: fseebach/resource-server1:0.0.1-SNAPSHOT
     environment:
      - EUREKA_URI=http://eureka:8761/eureka
-     - AUTH_SERVER_URI=http://auth-server:8080/
+     - AUTH_SERVER_URI=http://auth-server:8081/
+    restart: on-failure:5 
   frontend:
     image: fseebach/frontend:0.0.2-SNAPSHOT
     ports:
@@ -25,18 +26,18 @@ services:
      - "8080:8080"
     environment:
      - EUREKA_URI=http://eureka:8761/eureka
-#    healthcheck:
-#      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/login"]
-#      interval: 1m30s
-#      timeout: 10s
-#      retries: 3
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/login"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
   gateway-server:
-    image: fseebach/gateway-server:0.0.1-SNAPSHOT
+    image: fseebach/gateway:0.0.1-SNAPSHOT
     ports:
      - "8888:8888"
     environment:
      - EUREKA_URI=http://eureka:8761/eureka
-     - AUTH_SERVER_URI=http://auth-server:8080/
+     - AUTH_SERVER_URI=http://auth-server:8081/
 #  zipkin-server:
 #    image: demo/zipkin-server:0.0.1-SNAPSHOT
 #    ports:
