@@ -40,7 +40,7 @@ export class TokenService {
   private setupExpireTime(token: Token) {
     setTimeout(() => {
       const diff = this.diffInSecondsForExp(token.decodedAccessToken.exp);
-      if (diff < 55 || token === null) {
+      if (diff < 30 || token === null) {
         this.refreshIframe().subscribe(t => this.nextToken(t), e => this.nextToken(null));
         return;
       }
