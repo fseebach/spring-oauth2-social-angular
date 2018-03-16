@@ -3,6 +3,8 @@ import { TokenService, Token } from './../oauth2connect/token.service';
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import "rxjs/add/operator/repeatWhen";
+import "rxjs/add/operator/skip";
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-profile',
@@ -12,15 +14,9 @@ import "rxjs/add/operator/repeatWhen";
 export class ProfileComponent implements OnInit {
 
   public token: Observable<Token> = null;
-  public expireTimeSeconds = new BehaviorSubject<number>(null);
-
+  
   constructor(private tokenService: TokenService) {
     this.token = tokenService.token;
-    
-    this.token
-      .filter(t => t !== null)
-      .switchMap(t => Observable.of(t).repeatWhen(t => t.delay(1000)))
-      .subscribe(t => this.expireTimeSeconds.next(t.expInMS / 1000))
 
   }
 

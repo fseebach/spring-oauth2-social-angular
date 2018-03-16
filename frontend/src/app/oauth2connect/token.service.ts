@@ -32,11 +32,20 @@ export class TokenService {
     this.iframe.style.height = '0px';
     this.iframe.style.border = '0'
     document.body.appendChild(this.iframe);
-
+    
     this.token
-      .filter(t => t !== null)
-      .switchMap(t => Observable.of(t).delay(t.expInMS - 40000))
+      .do(t => t === null ? console.log("New token: %o", t) : console.group("New Token: %o", t))
+      .switchMap(t => 
+        t === null ? 
+        Observable.of(null) : 
+        Observable.of(t).repeatWhen(t => t.delay(10000))
+      ).filter(t => t !== null)
+      .do(t => console.log("Expires in: %o", t.expInMS))
+      .filter(t => t.expInMS < 10000)
+      .do(t => console.warn("Token about to expire: %o", t))
       .switchMap(t => this.refreshIframe())
+      .catch(err => Observable.of(<string>null))
+      .do(t => console.groupEnd())
       .subscribe(t => this.nextToken(t));
 
   }
@@ -79,11 +88,12 @@ export class TokenService {
     })
 
     return observable
-      .timeout(4000)
+      .timeout(5000)
       .do(t => window.removeEventListener('message', listener))
       .catch(function(err){ 
         window.removeEventListener('message', listener)
-        return Observable.of(<string>null);
+        console.error("Token refresh failed: %e", err)
+        return Observable.throw(err);
       })
   }
 
