@@ -22,7 +22,7 @@ repositories {
 	mavenCentral()
 }
 
-node 
+node
 {
   version = "7.5.0"
   download = true
@@ -37,20 +37,26 @@ task buildFrontend(type: NpmTask, dependsOn: 'npmInstall') {
   args = ['run','build']
 }
 
+task startDev(type: NpmTask, dependsOn: 'npmInstall') {
+  group = 'build'
+  description = 'Start'
+  args = ['run','start']
+}
+
 task buildDocker(type: Docker) {
   baseImage = 'nginx:1.13.3-alpine'
   push = true // project.hasProperty('push')
   tag = 'fseebach/frontend'
-  
+
   addFile {
     from 'nginx'
     into '/etc/nginx/conf.d/'
   }
   addFile {
-    from 'dist' 
+    from 'dist'
     into '/usr/share/nginx/html'
   }
-  
+
   entryPoint(['nginx', '-g', 'daemon off;'])
 }
 
